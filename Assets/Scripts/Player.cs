@@ -1,3 +1,4 @@
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -13,6 +14,11 @@ public class Player : MonoBehaviour
     private float verticalInput;
     private Rigidbody rigidbodyComponent;
 
+    //Player Health Stats
+    private float currentHealth;
+    private float maxHealth = 100f;
+    public HealthBar healthBar;
+
 
     //Camera functionality
     [SerializeField] private GameObject cam;
@@ -21,17 +27,36 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject gun;
     [SerializeField] private GameObject laserGun;
 
+    //SpawnManager
+    public SpawnManager spawnManager;
+    private Battery batty;
+
     // Start is called before the first frame update
     void Start()
     {
+        currentHealth = maxHealth;
         moveSpeed = 0.4f;
         maxVelocity = 2f;
+        gun.SetActive(true);
+        laserGun.SetActive(false);
         rigidbodyComponent = GetComponent<Rigidbody>();
+        healthBar = GetComponentInChildren<HealthBar>();
+        healthBar.SetMaxCharge((maxHealth / maxHealth));
+        SetHealthBar();
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        //////////////////////////////////
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            spawnManager.Spawn(0);
+
+        }
+        //////////////////////////////
+
         if (Input.GetKeyUp(KeyCode.C))
         {
             cam.GetComponent<CameraFollow>().SetCameraMode();
@@ -67,13 +92,25 @@ public class Player : MonoBehaviour
         rigidbodyComponent.velocity = Vector3.ClampMagnitude(rigidbodyComponent.velocity, maxVelocity);
         
 
+
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void SetHealthBar()
     {
-        if (other.gameObject.layer == 7)
+        healthBar.SetCharge((currentHealth / maxHealth));
+    }
+
+    public void TakeDamage(float damage)
+    {
+        if (currentHealth > 0f)
         {
-            Destroy(other.gameObject);
+            currentHealth -= damage;
         }
+        else
+        {
+            this.gameObject.SetActive(false);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+        }
+        SetHealthBar();
     }
 }

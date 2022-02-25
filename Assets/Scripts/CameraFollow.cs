@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
@@ -16,6 +14,7 @@ public class CameraFollow : MonoBehaviour
     public bool shouldLookAt = true;
     private void Start()
     {
+        target = GameObject.Find("Player");
         rigidbodyComponent = target.GetComponent<Rigidbody>();
     }
     // Update is called once per frame
@@ -43,12 +42,12 @@ public class CameraFollow : MonoBehaviour
     {
         if (shouldLookAt)
         {
-            Debug.Log("Changed Mode to Fixed");
+            //Debug.Log("Changed Mode to Fixed");
             shouldLookAt = false;
         }
         else
         {
-            Debug.Log("Changed Mode to Follow");
+            //Debug.Log("Changed Mode to Follow");
             shouldLookAt = true;
         }
     }

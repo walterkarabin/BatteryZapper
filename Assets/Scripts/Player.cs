@@ -31,6 +31,14 @@ public class Player : MonoBehaviour
     public SpawnManager spawnManager;
     private Battery batty;
 
+    // * Better comments extension:
+    // The tags (!, ?, TODO, *) all go at the beginning of the comment
+    // This is a regular comment
+    // ! this is an alert
+    // ? this is a query
+    // TODO this is a todo comment
+    // * this is a highlighted comment
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,19 +51,24 @@ public class Player : MonoBehaviour
         healthBar = GetComponentInChildren<HealthBar>();
         healthBar.SetMaxCharge((maxHealth / maxHealth));
         SetHealthBar();
-        
     }
+
 
     // Update is called once per frame
     void Update()
     {
-        //////////////////////////////////
+        ////////////////////////////////
         if (Input.GetKeyDown(KeyCode.P))
         {
-            spawnManager.Spawn(0);
+            spawnManager.SpawnEnemies();
 
         }
-        //////////////////////////////
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            spawnManager.SpawnBatteries();
+
+        }
+        ////////////////////////////////
 
         if (Input.GetKeyUp(KeyCode.C))
         {

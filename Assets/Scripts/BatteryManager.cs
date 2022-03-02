@@ -22,6 +22,6 @@ public class BatteryManager : MonoBehaviour
 
     private void SpawnBattery()
     {
-        Instantiate<Battery>(batt, spawnManager.GetRandomPoint(), Quaternion.identity);
+        Instantiate<Battery>(batt, spawnManager.GetRandomPointOnMap(), Quaternion.identity);
     }
 }

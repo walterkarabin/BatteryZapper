@@ -27,6 +27,10 @@ public class EnemyAI : MonoBehaviour
     public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
 
+    //Events for enemy
+    public delegate void WasKilled();
+    public static event WasKilled OnKilled;
+
     private void Awake()
     {
         player = GameObject.Find("Player");
@@ -41,10 +45,10 @@ public class EnemyAI : MonoBehaviour
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
 
-        if (!playerInSightRange && !playerInAttackRange) Patrolling();
+        /* if (!playerInSightRange && !playerInAttackRange) Patrolling();
         if (playerInSightRange && !playerInAttackRange) ChasePlayer();
         if (playerInSightRange && playerInAttackRange) AttackPlayer();
-
+ */
     }
     //Navigation
     void Patrolling()
@@ -71,19 +75,21 @@ public class EnemyAI : MonoBehaviour
         {
             walkPointSet = true;
         }
+        transform.LookAt(walkPoint);
+
     }
 
     void ChasePlayer()
     {
         agent.SetDestination(player.transform.position);
 
-        transform.LookAt(player.transform);
+        transform.LookAt(player.transform.position, Vector3.up);
     }
     void AttackPlayer()
     {
         agent.SetDestination(transform.position);
 
-        transform.LookAt(player.transform);
+        transform.LookAt(player.transform.position, Vector3.up);
 
         if (!alreadyAttacked)
         {
@@ -108,6 +114,11 @@ public class EnemyAI : MonoBehaviour
         }
         else
         {
+            /* if (OnKilled != null)
+            {
+                Destroy(gameObject);
+                OnKilled();
+            } */
             Destroy(gameObject);
         }
     }

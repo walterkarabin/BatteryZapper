@@ -30,6 +30,9 @@ public class SpawnManager : MonoBehaviour
     {
         player = GameObject.Find("Player");
         center = level.position;
+
+        SpawnBatteries();
+        SpawnEnemies();
     }
 
     private void OnEnable() {
@@ -157,6 +160,6 @@ public class SpawnManager : MonoBehaviour
 
     public void UpdateLists() {
         numOfEnemies = new List<EnemyAI>(GameObject.FindObjectsOfType<EnemyAI>());
-        
+        numOfBatteries = new List<Battery>(GameObject.FindObjectsOfType<Battery>());
     }
 }

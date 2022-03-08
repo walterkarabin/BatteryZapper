@@ -3,12 +3,11 @@ using UnityEngine.AI;
 
 public class EnemyAI : MonoBehaviour
 {
+    // References
     public NavMeshAgent agent;
-
     public GameObject player;
-
     public LayerMask whatIsGround, whatIsPlayer;
-
+    public SpawnManager spawnManager;
     //Enemy Health Attributes
     private float currentHealth;
     public float maxHealth = 50f;
@@ -114,12 +113,12 @@ public class EnemyAI : MonoBehaviour
         }
         else
         {
-            /* if (OnKilled != null)
+            if (OnKilled != null)
             {
                 Destroy(gameObject);
                 OnKilled();
-            } */
-            Destroy(gameObject);
+            }
+            // Destroy(gameObject);
         }
     }
 

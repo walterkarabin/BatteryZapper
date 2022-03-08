@@ -18,6 +18,11 @@ public class Battery : MonoBehaviour
     //Texture Reference
     Renderer renderChargeLevel;
     Renderer renderScreen;
+
+    //Events for Battery
+    public delegate void FullyCharged();
+    public static event FullyCharged OnFullyCharged;
+    public static event FullyCharged OnNotFullyCharged;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -60,16 +65,26 @@ public class Battery : MonoBehaviour
     }
     private void MeterNotFull()
     {
+        if (isFull == true)
+        {
+            OnNotFullyCharged?.Invoke();
+        }
         isFull = false;
         renderChargeLevel.material.SetFloat("_NotDone", 1f);
         renderScreen.material.SetColor("_Color", Color.red);
+        // Event for the battery to adjust the list of charged batteries
     }
     private void MeterFull()
     {
+        if(isFull == false)
+        {
+            OnFullyCharged?.Invoke();
+        }
         isFull = true;
         renderChargeLevel.material.SetFloat("_NotDone", 0f);
         renderScreen.material.SetColor("_Color", Color.green);
-        Invoke(nameof(ChangeScene), 3f);
+        Destroy(this.gameObject);
+        // Trigger event for list of batteries charged
     }
 
     private void FillMeter(float chargeLevel)

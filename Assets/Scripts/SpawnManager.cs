@@ -217,6 +217,7 @@ public class SpawnManager : MonoBehaviour
             SpawnObstacle();
         }
     }
+    // Cleaner editor with parenting
     public void SpawnObstacle()
     {
         Vector3 point = new Vector3();

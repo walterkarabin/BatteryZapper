@@ -11,7 +11,7 @@ public class CameraFollow : MonoBehaviour
 
     //Used for changing camera follow modes
     [SerializeField] private Quaternion defaultRotation;
-    public bool shouldLookAt = true;
+    private bool shouldLookAt = true;
     private void Start()
     {
         target = GameObject.Find("Player");

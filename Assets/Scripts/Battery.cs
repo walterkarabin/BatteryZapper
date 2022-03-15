@@ -83,7 +83,6 @@ public class Battery : MonoBehaviour
         isFull = true;
         renderChargeLevel.material.SetFloat("_NotDone", 0f);
         renderScreen.material.SetColor("_Color", Color.green);
-        Destroy(this.gameObject);
         // Trigger event for list of batteries charged
     }
 

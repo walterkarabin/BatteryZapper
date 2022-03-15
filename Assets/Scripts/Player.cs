@@ -1,5 +1,6 @@
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using TMPro;
 
 public class Player : MonoBehaviour
 {
@@ -26,10 +27,13 @@ public class Player : MonoBehaviour
     //Weapon objects
     [SerializeField] private GameObject gun;
     [SerializeField] private GameObject laserGun;
-
+    // Weapon Text
+    public TextMeshProUGUI weaponText;
     //SpawnManager
     public SpawnManager spawnManager;
     private Battery batty;
+
+    public float Health { get => currentHealth; set => currentHealth = value; }
 
     // * Better comments extension:
     // The tags (!, ?, TODO, *) all go at the beginning of the comment
@@ -43,10 +47,12 @@ public class Player : MonoBehaviour
     void Start()
     {
         currentHealth = maxHealth;
+        Score.maxHealth = maxHealth;
         moveSpeed = 0.4f;
         maxVelocity = 2f;
         gun.SetActive(true);
         laserGun.SetActive(false);
+        weaponText.text = "Gun [1], press [2] to switch";
         rigidbodyComponent = GetComponent<Rigidbody>();
         healthBar = GetComponentInChildren<HealthBar>();
         healthBar.SetMaxCharge((maxHealth / maxHealth));
@@ -78,11 +84,13 @@ public class Player : MonoBehaviour
         {
             gun.SetActive(true);
             laserGun.SetActive(false);
+            weaponText.text = "Gun [1]";
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             gun.SetActive(false);
             laserGun.SetActive(true);
+            weaponText.text = "Laser Gun [2]";
         }
 
 

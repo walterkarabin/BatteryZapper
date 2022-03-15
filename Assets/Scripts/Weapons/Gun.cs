@@ -145,8 +145,8 @@ public class Gun : MonoBehaviour
         // Turn on our line renderer
         laserLine.enabled = true;
 
-        //Wait for .07 seconds
-        yield return 0.07f;
+        //Wait for .05 seconds
+        yield return 0.05f;
 
         // Deactivate our line renderer after waiting
         laserLine.enabled = false;

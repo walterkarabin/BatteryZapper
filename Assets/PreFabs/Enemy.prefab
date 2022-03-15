@@ -120,10 +120,12 @@ MonoBehaviour:
   whatIsPlayer:
     serializedVersion: 2
     m_Bits: 64
+  spawnManager: {fileID: 0}
   maxHealth: 50
   walkPoint: {x: 0, y: 0, z: 0}
   walkPointRange: 5
-  timeBetweenAttacks: 0.5
+  timeBetweenAttacks: 1
+  damage: 10
   sightRange: 2.5
   attackRange: 1.25
   playerInSightRange: 0

@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 
 public class SpawnManager : MonoBehaviour
 {
     private float maxDistance = 7.5f;
-    private float maxObstacleDistance = 5f;
+    [SerializeField]private float maxObstacleDistance = 4f;
     private Vector3 center;
     public Transform level;
 
@@ -22,11 +23,11 @@ public class SpawnManager : MonoBehaviour
     // int to keep track of batteries in the game
     private int numOfBatteries = 0;
     // Maximum Number of Enemies
-    public int maxEnemies;
+    [Range(0, 8)]public int maxEnemies;
     // Maximum Number of Batteries
-    public int maxBatteries;
+    [Range(1, 8)]public int maxBatteries;
     // Maximum Number of Obstacles
-    public int maxObstacles;
+    [Range(0, 20)]public int maxObstacles;
     // Keep track of enemies killed by player
     private int numEnemiesKilled = 0;
     private int waveCounter = 0;
@@ -37,6 +38,9 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]private Transform ObstacleParent;
     [SerializeField]private Transform BatteryParent;
     [SerializeField]private Transform EnemyParent;
+
+    // Level Score manager
+    public LevelScore levelScore;
 
 
     // Start is called before the first frame update
@@ -49,9 +53,21 @@ public class SpawnManager : MonoBehaviour
         BatteryParent.parent = parent;
         EnemyParent.parent = parent;
 
-        SpawnObstacles();
-        SpawnBatteries();
-        SpawnEnemies();
+        Invoke("SpawnObstacles", 1f);
+        Invoke("SpawnBatteries", 1.5f);
+        Invoke("SpawnEnemies", 2f);
+
+
+        if (Score.totalScore>0)
+        {
+            player.GetComponent<Player>().Health = Score.health;
+            player.GetComponent<Player>().SetHealthBar();
+            Score.enemies++;
+            Score.batteries++;
+            Score.obstacles++;
+            UpdateScore();
+        }
+        Score.totalScore++;
     }
 
     private void OnEnable()
@@ -76,7 +92,11 @@ public class SpawnManager : MonoBehaviour
         {
             Invoke("SpawnEnemies", 2f);
         }
-
+        if (numBatteriesCharged == maxBatteries)
+        {
+            Score.health = player.GetComponent<Player>().Health;
+            ChangeScene();
+        }
     }
     // ! Finding points on the NavMesh ! // ----------------------------------------------------
     public Vector3 GetRandomPointOnMap()
@@ -99,10 +119,14 @@ public class SpawnManager : MonoBehaviour
         }
 
     }
-    public Vector3 GetRandomPointOnMap(float maxRadius)
+    public Vector3 GetRandomPointOnMap(float maxRadius, bool square = false)
     {
         // Get Random Point inside Sphere which position is center, radius is maxDistance
         Vector3 randomPos = Random.insideUnitSphere * maxRadius + center;
+        if (square)
+        {
+            randomPos = new Vector3(Random.Range(-maxRadius, maxRadius), 0, Random.Range(-maxRadius, maxRadius));
+        }
 
         NavMeshHit hit; // NavMesh Sampling Info Container
 
@@ -159,10 +183,6 @@ public class SpawnManager : MonoBehaviour
             }
             waveCounter++;
         }
-        else
-        {
-            Debug.Log("Number of enemies is: " + numOfEnemies);
-        }
     }
     public void SpawnEnemy()
     {
@@ -193,10 +213,6 @@ public class SpawnManager : MonoBehaviour
                 SpawnBattery();
             }
         }
-        else
-        {
-            Debug.Log("Number of batteries is: " + numOfBatteries);
-        }
     }
     public void SpawnBattery()
     {
@@ -221,7 +237,7 @@ public class SpawnManager : MonoBehaviour
     public void SpawnObstacle()
     {
         Vector3 point = new Vector3();
-        point = GetRandomPointOnMap(maxObstacleDistance) + new Vector3(0, .15f, 0);
+        point = GetRandomPointOnMap(maxObstacleDistance, true) + new Vector3(0, .15f, 0);
         point.x = Mathf.Round(point.x * 100f) / 100f;
         point.z = Mathf.Round(point.z * 100f) / 100f;
 
@@ -232,6 +248,7 @@ public class SpawnManager : MonoBehaviour
     {
         numEnemiesKilled++;
         numOfEnemies--;
+        Score.totalKills++;
     }
 
     public void ChargedBattery()
@@ -241,12 +258,13 @@ public class SpawnManager : MonoBehaviour
             numBatteriesCharged++;
             numOfBatteries--;
         }
-        if (numBatteriesCharged == maxBatteries)
-        {
-            // Add Event for ending this level
-            Debug.Log("ALL BATTERIES ARE CHARGED");
-        }
     }
+
+    private void ChangeScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
     public void UnChargedBattery()
     {
         if (numBatteriesCharged > 0)
@@ -259,5 +277,13 @@ public class SpawnManager : MonoBehaviour
     {
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(center, maxDistance);
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(center, maxObstacleDistance);
+    }
+    private void UpdateScore()
+    {
+        maxBatteries = Score.batteries;
+        maxEnemies = Score.enemies;
+        maxObstacles = Score.obstacles;
     }
 }
